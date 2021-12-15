@@ -1,11 +1,11 @@
 <?php
 
-namespace CodebarAg\LaravelPrerender;
+namespace MotaWord\Active;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
 
-class LaravelPrerenderServiceProvider extends ServiceProvider
+class MotaWordActiveServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
@@ -13,14 +13,14 @@ class LaravelPrerenderServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/prerender.php' => config_path('prerender.php'),
+            __DIR__ . '/../config/motaword.php' => config_path('motaword.php'),
         ], 'config');
 
-        if (config('prerender.enable')) {
+        if (config('motaword.active.serve_enable')) {
             /** @var Kernel $kernel */
             $kernel = $this->app->make(Kernel::class);
 
-            $kernel->pushMiddleware(PrerenderMiddleware::class);
+            $kernel->pushMiddleware(ActiveServeMiddleware::class);
         }
     }
 
@@ -30,8 +30,8 @@ class LaravelPrerenderServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/prerender.php',
-            'prerender'
+            __DIR__ . '/../config/motaword.php',
+            'motaword'
         );
     }
 }

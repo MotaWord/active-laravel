@@ -1,9 +1,9 @@
 <?php
 
-namespace CodebarAg\LaravelPrerender\Tests;
+namespace MotaWord\Active\Tests;
 
-use CodebarAg\LaravelPrerender\LaravelPrerenderServiceProvider;
-use CodebarAg\LaravelPrerender\PrerenderMiddleware;
+use MotaWord\Active\MotaWordActiveServiceProvider;
+use MotaWord\Active\ActiveServeMiddleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -27,7 +27,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            LaravelPrerenderServiceProvider::class,
+            MotaWordActiveServiceProvider::class,
         ];
     }
 
@@ -36,7 +36,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function getEnvironmentSetUp($app): void
     {
-        $app->make(Kernel::class)->prependMiddleware(PrerenderMiddleware::class);
+        $app->make(Kernel::class)->prependMiddleware(ActiveServeMiddleware::class);
 
         // mock guzzle client
         $app->bind(Client::class, function () {

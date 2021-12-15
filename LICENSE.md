@@ -1,5 +1,7 @@
 The MIT License (MIT)
 
+Copyright (c) MotaWord  <info@motaword.com>
+
 Copyright (c) codebar AG  <hi@codebar.ch>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

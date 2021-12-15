@@ -1,14 +1,21 @@
 {
-    "name": "codebar-ag/laravel-prerender",
-    "description": "Laravel middleware for prerendering javascript-rendered pages on the fly for SEO",
+    "name": "motaword/active-laravel",
+    "description": "Laravel middleware for MotaWord Active",
     "keywords": [
         "laravel",
-        "prerender",
-        "codebar-ag"
+        "motaword",
+        "translation",
+        "localization"
     ],
-    "homepage": "https://github.com/codebar-ag/Laravel-Prerender",
+    "homepage": "https://github.com/motaword/active-laravel",
     "license": "MIT",
     "authors": [
+        {
+            "name": "MotaWord Development",
+            "email": "it@motaword.com",
+            "homepage": "https://www.motaword.com",
+            "role": "Developer"
+        },
         {
             "name": "Sebastian Fix",
             "email": "sebastian.fix@codebar.ch",
@@ -40,12 +47,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CodebarAg\\LaravelPrerender\\": "src/"
+            "MotaWord\\Active\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "CodebarAg\\LaravelPrerender\\Tests\\": "tests/"
+            "MotaWord\\Active\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -59,7 +66,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "CodebarAg\\LaravelPrerender\\LaravelPrerenderServiceProvider"
+                "MotaWord\\Active\\MotaWordActiveServiceProvider"
             ]
         }
     },

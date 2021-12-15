@@ -1,8 +1,8 @@
 <?php
 
-namespace CodebarAg\LaravelPrerender\Tests;
+namespace MotaWord\Active\Tests;
 
-class PrerenderMiddlewareTest extends TestCase
+class ActiveMiddlewareTest extends TestCase
 {
     /** @test */
     public function it_should_prerender_page_on_get_request()
@@ -42,7 +42,7 @@ class PrerenderMiddlewareTest extends TestCase
     /** @test */
     public function it_should_prerender_page_with_url_in_whitelist()
     {
-        config()->set('prerender.whitelist', ['/test-middleware*']);
+        config()->set('motaword.active.whitelist', ['/test-middleware*']);
 
         $this->get('/test-middleware?_escaped_fragment_')
             ->assertHeader('prerender.io-mock', true)
@@ -52,7 +52,7 @@ class PrerenderMiddlewareTest extends TestCase
     /** @test */
     public function is_should_not_prerender_page_in_blacklist()
     {
-        config()->set('prerender.blacklist', ['/test-middleware*']);
+        config()->set('motaword.active.blacklist', ['/test-middleware*']);
 
         $this->get('/test-middleware?_escaped_fragment_')
             ->assertSuccessful()
@@ -80,6 +80,6 @@ class PrerenderMiddlewareTest extends TestCase
 
     private function allowSymfonyUserAgent()
     {
-        config()->set('prerender.crawler_user_agents', ['symfony']);
+        config()->set('motaword.active.crawler_user_agents', ['symfony']);
     }
 }
