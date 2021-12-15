@@ -2,8 +2,6 @@
 
 namespace MotaWord\Active\Tests;
 
-use MotaWord\Active\MotaWordActiveServiceProvider;
-use MotaWord\Active\ActiveServeMiddleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -11,6 +9,8 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Support\Facades\Route;
+use MotaWord\Active\ActiveServeMiddleware;
+use MotaWord\Active\MotaWordActiveServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

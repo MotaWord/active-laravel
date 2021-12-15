@@ -3,6 +3,7 @@
 namespace MotaWord\Active;
 
 use Closure;
+use Exception;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -12,7 +13,6 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Exception;
 
 class ActiveServeMiddleware
 {

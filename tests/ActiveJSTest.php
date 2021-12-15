@@ -30,6 +30,4 @@ class ActiveJSTest extends TestCase
         $this->assertNotEmpty($result);
         $this->assertEquals('<script src="https://serve.staging.motaword.com/js/1-1.js" crossorigin async></script>', $result);
     }
-
-
 }
