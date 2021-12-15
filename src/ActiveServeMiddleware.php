@@ -1,6 +1,6 @@
 <?php
 
-namespace CodebarAg\LaravelPrerender;
+namespace MotaWord\Active;
 
 use Closure;
 use GuzzleHttp\Client as Guzzle;
@@ -12,8 +12,9 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Exception;
 
-class PrerenderMiddleware
+class ActiveServeMiddleware
 {
     /**
      * The Guzzle Client that sends GET requests to the prerender server.
@@ -69,7 +70,7 @@ class PrerenderMiddleware
      */
     public function __construct(Guzzle $client)
     {
-        $this->returnSoftHttpCodes = config('prerender.prerender_soft_http_codes');
+        $this->returnSoftHttpCodes = config('motaword.active.soft_http_codes');
 
         if ($this->returnSoftHttpCodes) {
             $this->client = $client;
@@ -80,11 +81,11 @@ class PrerenderMiddleware
             $this->client = new Guzzle($config);
         }
 
-        $config = config('prerender');
+        $config = config('motaword.active');
 
-        $this->prerenderUri = $config['prerender_url'];
+        $this->prerenderUri = $config['serve_url'];
         $this->crawlerUserAgents = $config['crawler_user_agents'];
-        $this->prerenderToken = $config['prerender_token'];
+        $this->prerenderToken = $config['token'];
         $this->whitelist = $config['whitelist'];
         $this->blacklist = $config['blacklist'];
     }
@@ -97,18 +98,18 @@ class PrerenderMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($this->shouldShowPrerenderedPage($request)) {
-            $prerenderedResponse = $this->getPrerenderedPageResponse($request);
+            $serveResponse = $this->getActiveServePageResponse($request);
 
-            if ($prerenderedResponse) {
-                $statusCode = $prerenderedResponse->getStatusCode();
+            if ($serveResponse) {
+                $statusCode = $serveResponse->getStatusCode();
 
                 if (!$this->returnSoftHttpCodes && $statusCode >= 300 && $statusCode < 400) {
-                    $headers = $prerenderedResponse->getHeaders();
+                    $headers = $serveResponse->getHeaders();
 
                     return Redirect::to(array_change_key_case($headers, CASE_LOWER)['location'][0], $statusCode);
                 }
 
-                return $this->buildSymfonyResponseFromGuzzleResponse($prerenderedResponse);
+                return $this->buildSymfonyResponseFromGuzzleResponse($serveResponse);
             }
         }
 
@@ -183,15 +184,16 @@ class PrerenderMiddleware
 
     /**
      * Prerender the page and return the Guzzle Response.
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function getPrerenderedPageResponse(Request $request): ?ResponseInterface
+    private function getActiveServePageResponse(Request $request): ?ResponseInterface
     {
         $headers = [
             'User-Agent' => $request->server->get('HTTP_USER_AGENT'),
         ];
 
         if ($this->prerenderToken) {
-            $headers['X-Prerender-Token'] = $this->prerenderToken;
+            $headers['X-MotaWord-Token'] = $this->prerenderToken;
         }
 
         $protocol = $request->isSecure() ? 'https' : 'http';
@@ -199,16 +201,25 @@ class PrerenderMiddleware
         try {
             // Return the Guzzle Response
             $host = $request->getHost();
+            $port = $request->getPort();
+            // no need to specify the port if it is one of the default ports of http and https.
+            if (($protocol === 'https' && (int)$port === 443) || ($protocol === 'http' && (int)$port === 80)) {
+                $port = null;
+            }
             $path = $request->Path();
             // Fix "//" 404 error
             if ($path === '/') {
                 $path = '';
             }
 
-            return $this->client->get($this->prerenderUri . '/' . urlencode($protocol.'://'.$host.'/'.$path), compact('headers'));
-        } catch (RequestException $exception) {
-            if (!$this->returnSoftHttpCodes && !empty($exception->getResponse()) && $exception->getResponse()->getStatusCode() === 404) {
-                abort(404);
+            $encodedUrl = urlencode($protocol.'://'.$host.($port ? ':'.$port : '').'/'.$path);
+
+            return $this->client->get($this->prerenderUri . '/' . $encodedUrl, compact('headers'));
+        } catch (Exception $exception) {
+            if ($exception instanceof RequestException) {
+                if (!$this->returnSoftHttpCodes && !empty($exception->getResponse()) && $exception->getResponse()->getStatusCode() === 404) {
+                    abort(404);
+                }
             }
 
             // In case of an exception, we only throw the exception if we are in debug mode. Otherwise,
