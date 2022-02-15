@@ -122,8 +122,6 @@ class ActiveServeMiddleware
     private function shouldShowPrerenderedPage(Request $request): bool
     {
         $userAgent = strtolower($request->server->get('HTTP_USER_AGENT'));
-        $bufferAgent = $request->server->get('X-BUFFERBOT');
-
         $requestUri = $request->getRequestUri();
         $referer = $request->headers->get('Referer');
 
@@ -147,10 +145,6 @@ class ActiveServeMiddleware
             if (Str::contains($userAgent, strtolower($crawlerUserAgent))) {
                 $isRequestingPrerenderedPage = true;
             }
-        }
-
-        if ($bufferAgent) {
-            $isRequestingPrerenderedPage = true;
         }
 
         if (!$isRequestingPrerenderedPage) {
@@ -178,7 +172,6 @@ class ActiveServeMiddleware
             }
         }
 
-        // Okay! Prerender please.
         return true;
     }
 

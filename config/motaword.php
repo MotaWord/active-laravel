@@ -49,6 +49,15 @@ return [
         |
         */
         'serve_url' => env('MOTAWORD_ACTIVE_SERVE_URL', 'https://serve.motaword.com'),
+        /*
+        |--------------------------------------------------------------------------
+        | Active JS URL
+        |--------------------------------------------------------------------------
+        |
+        | This is the base URL for front facing Active experience. This is typically used if Serve is disabled.
+        |
+        */
+        'active_js_url' => env('MOTAWORD_ACTIVE_JS_URL', 'https://active-js.motaword.com/index.js'),
 
         /*
         |--------------------------------------------------------------------------
