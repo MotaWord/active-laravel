@@ -61,6 +61,16 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Optimize for browsers
+        |--------------------------------------------------------------------------
+        |
+        | When enabled, we will also inject <link> tags to preload ActiveJS and preconnect to MW domains.
+        |
+        */
+        'optimize_for_browsers' => env('MOTAWORD_ACTIVE_OPTIMIZE_FOR_BROWSERS', true),
+
+        /*
+        |--------------------------------------------------------------------------
         | Return soft HTTP status codes
         |--------------------------------------------------------------------------
         |

@@ -19,10 +19,27 @@ class ActiveJS
             throw new Exception('Token, project ID and widget ID are required for MotaWord Active.');
         }
 
+        $injection = "";
+        $scriptUrl = "";
         if ($config['serve_enable']) {
-            return "<script src=\"${config['serve_url']}/js/${config['project_id']}-${config['widget_id']}.js\" ".($config['token'] ? 'data-token="'.$config['token'].'"' : '').' crossorigin async></script>';
+            $scriptUrl = "${config['serve_url']}/js/${config['project_id']}-${config['widget_id']}.js";
+            $injection .= "<script src=\"$scriptUrl\" ".($config['token'] ? 'data-token="'.$config['token'].'"' : '')." crossorigin async></script>";
         } else {
-            return "<script src=\"${config['active_js_url']}\" ".($config['token'] ? 'data-token="'.$config['token'].'"' : '').' '.($config['project_id'] ? 'data-project-id="'.$config['project_id'].'"' : '').' '.($config['widget_id'] ? 'data-widget-id="'.$config['widget_id'].'"' : '').' crossorigin async></script>';
+            $scriptUrl = $config['active_js_url'];
+            $injection .= "<script src=\"$scriptUrl\" ".($config['token'] ? 'data-token="'.$config['token'].'"' : '')." ".($config['project_id'] ? 'data-project-id="'.$config['project_id'].'"' : '')." ".($config['widget_id'] ? 'data-widget-id="'.$config['widget_id'].'"' : '')." crossorigin async></script>";
         }
+
+        if ($config['optimize_for_browsers']) {
+            $preload = "";
+            if ($config['serve_enable']) {
+                $preload = "<link rel=\"preconnect\" href=\"https://serve.motaword.com\">".$preload;
+            } else {
+                $preload = "<link rel=\"preconnect\" href=\"https://active-js.motaword.com\">".$preload;
+            }
+            $preload = $preload."<link rel=\"preload\" href=\"$scriptUrl\" as=\"script\" importance=\"high\" crossorigin><link rel=\"preconnect\" href=\"https://api.motaword.com\">";
+            $injection = $preload.$injection;
+        }
+
+        return $injection;
     }
 }
