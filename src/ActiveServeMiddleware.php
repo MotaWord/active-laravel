@@ -98,7 +98,11 @@ class ActiveServeMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($this->shouldShowPrerenderedPage($request)) {
-            $serveResponse = $this->getActiveServePageResponse($request);
+            try {
+                $serveResponse = $this->getActiveServePageResponse($request);
+            } catch (\Exception $e) {
+                return $next($request);
+            }
 
             if ($serveResponse) {
                 $statusCode = $serveResponse->getStatusCode();
@@ -132,6 +136,13 @@ class ActiveServeMiddleware
         }
 
         if (!$request->isMethod('GET')) {
+            return false;
+        }
+
+        // Check if the current URL is allowed to be served via Serve.
+        $path = parse_url($request->getPathInfo(), PHP_URL_PATH);
+        $matches = $this->doesPathMatchPatterns($path, config('motaword.active.ignored_urls', []));
+        if ($matches) {
             return false;
         }
 
@@ -173,6 +184,22 @@ class ActiveServeMiddleware
         }
 
         return true;
+    }
+
+    protected function doesPathMatchPatterns($path, $patterns): bool
+    {
+        foreach ($patterns as $pattern) {
+            // prepend optional 2-3-char locale code in the pattern
+            $pattern = str_replace('*', '.*', $pattern);
+            $patternWithLocale = '#^(^([/]?)[a-zA-Z]{2,3}?)?('.$pattern.')\z#u';
+            preg_match($patternWithLocale, $path, $matches);
+            $isMatch = isset($matches[1]) && $matches[1] ? $matches[1] : ($matches[0] ?? null);
+            if ($isMatch) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
