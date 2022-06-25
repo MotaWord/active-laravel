@@ -38,11 +38,11 @@ class ActiveJS
         if ($config['optimize_for_browsers']) {
             $preload = '';
             if ($config['serve_enable']) {
-                $preload = '<link rel="preconnect" href="https://serve.motaword.com">'.$preload;
+                $preload = '<link rel="preconnect" href="https://serve.motaword.com"/>'.$preload;
             } else {
-                $preload = '<link rel="preconnect" href="https://active-js.motaword.com">'.$preload;
+                $preload = '<link rel="preconnect" href="https://active-js.motaword.com"/>'.$preload;
             }
-            $preload = $preload."<link rel=\"preload\" href=\"$scriptUrl\" as=\"script\" importance=\"high\" crossorigin'.$pageOptimizedAttribute.'><link rel=\"preconnect\" href=\"https://api.motaword.com\">";
+            $preload = $preload."<link rel=\"preload\" href=\"$scriptUrl\" as=\"script\" importance=\"high\" crossorigin'.$pageOptimizedAttribute.'/><link rel=\"preconnect\" href=\"https://api.motaword.com\"/>";
             $injection = $preload.$injection;
         }
 
