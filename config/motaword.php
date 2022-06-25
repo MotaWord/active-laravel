@@ -39,6 +39,7 @@ return [
         |
         */
         'serve_enable' => env('MOTAWORD_ACTIVE_SERVE_ENABLE', true),
+        'serve_page_optimized' => env('MOTAWORD_ACTIVE_SERVE_PAGE_OPTIMIZED', true),
 
         /*
         |--------------------------------------------------------------------------
