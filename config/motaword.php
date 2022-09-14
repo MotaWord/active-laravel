@@ -202,7 +202,8 @@ return [
             'nuzzel',
             'Discordbot',
             'Google Page Speed',
-            'Qwantify'
+            'Qwantify',
+            'SemrushBot',
         ],
     ],
 ];
