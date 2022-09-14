@@ -10,7 +10,7 @@ class ActiveMiddlewareTest extends TestCase
         $this->allowSymfonyUserAgent();
 
         $this->get('/test-middleware')
-            ->assertHeader('prerender.io-mock', true)
+            ->assertHeader('X-Renderer', 'MotaWord Active Serve')
             ->assertSuccessful();
     }
 
@@ -24,37 +24,31 @@ class ActiveMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function it_should_prerender_page_with_escaped_fragment_in_query_string()
-    {
-        $this->get('/test-middleware?_escaped_fragment_')
-            ->assertHeader('prerender.io-mock', true)
-            ->assertSuccessful();
-    }
-
-    /** @test */
     public function it_should_prerender_when_user_agent_is_part_of_crawler_user_agents()
     {
         $this->get('/test-middleware', ['User-Agent' => 'Googlebot/2.1 (+http://www.google.com/bot.html)',])
-            ->assertHeader('prerender.io-mock', true)
+            ->assertHeader('X-Renderer', 'MotaWord Active Serve')
             ->assertSuccessful();
     }
 
     /** @test */
     public function it_should_prerender_page_with_url_in_whitelist()
     {
+        $this->allowSymfonyUserAgent();
         config()->set('motaword.active.whitelist', ['/test-middleware*']);
 
-        $this->get('/test-middleware?_escaped_fragment_')
-            ->assertHeader('prerender.io-mock', true)
+        $this->get('/test-middleware')
+            ->assertHeader('X-Renderer', 'MotaWord Active Serve')
             ->assertSuccessful();
     }
 
     /** @test */
     public function is_should_not_prerender_page_in_blacklist()
     {
+        $this->allowSymfonyUserAgent();
         config()->set('motaword.active.blacklist', ['/test-middleware*']);
 
-        $this->get('/test-middleware?_escaped_fragment_')
+        $this->get('/test-middleware')
             ->assertSuccessful()
             ->assertHeaderMissing('prerender.io-mock')
             ->assertSee('GET - Success');

@@ -41,7 +41,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // mock guzzle client
         $app->bind(Client::class, function () {
             $mock = new MockHandler([
-                new Response(200, ['prerender.io-mock' => true]),
+                new Response(200, ['X-Renderer' => 'MotaWord Active Serve']),
             ]);
             $stack = HandlerStack::create($mock);
 

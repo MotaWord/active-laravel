@@ -3,14 +3,20 @@
 namespace MotaWord\Active;
 
 use Exception;
+use Illuminate\Http\Request;
 
 class ActiveJS
 {
     /**
      * @throws Exception
      */
-    public static function generate(): string
+    public static function generate(?Request $request = null): string
     {
+        if ($request) {
+            if (!static::isAllowed($request)) {
+                return '';
+            }
+        }
         $config = config('motaword.active');
 
         if (!$config || !$config['project_id'] || !$config['widget_id'] || !$config['token']
@@ -47,5 +53,11 @@ class ActiveJS
         }
 
         return $injection;
+    }
+
+    public static function isAllowed(Request $request)
+    {
+        $middleware = new ActiveServeMiddleware(null);
+        return $middleware->isUrlAllowed($request);
     }
 }

@@ -68,13 +68,13 @@ class ActiveServeMiddleware
     /**
      * Creates a new PrerenderMiddleware instance.
      */
-    public function __construct(Guzzle $client)
+    public function __construct(?Guzzle $client = null)
     {
         $this->returnSoftHttpCodes = config('motaword.active.soft_http_codes');
 
         if ($this->returnSoftHttpCodes) {
             $this->client = $client;
-        } else {
+        } else if ($client) {
             // Workaround to avoid following redirects
             $config = $client->getConfig();
             $config['allow_redirects'] = false;
@@ -123,14 +123,13 @@ class ActiveServeMiddleware
     /**
      * Returns whether the request must be prerendered.
      */
-    private function shouldShowPrerenderedPage(Request $request): bool
+    public function shouldShowPrerenderedPage(Request $request): bool
     {
+        if (!$this->isUrlAllowed($request)) {
+            return false;
+        }
+
         $userAgent = strtolower($request->server->get('HTTP_USER_AGENT'));
-        $requestUri = $request->getRequestUri();
-        $referer = $request->headers->get('Referer');
-
-        $isRequestingPrerenderedPage = false;
-
         if (!$userAgent) {
             return false;
         }
@@ -139,26 +138,24 @@ class ActiveServeMiddleware
             return false;
         }
 
-        // Check if the current URL is allowed to be served via Serve.
-        $path = parse_url($request->getPathInfo(), PHP_URL_PATH);
-        $matches = $this->doesPathMatchPatterns($path, config('motaword.active.ignored_urls', []));
-        if ($matches) {
-            return false;
-        }
-
-        // prerender if _escaped_fragment_ is in the query string
-        if ($request->query->has('_escaped_fragment_')) {
-            $isRequestingPrerenderedPage = true;
-        }
-
         // prerender if a crawler is detected
         foreach ($this->crawlerUserAgents as $crawlerUserAgent) {
             if (Str::contains($userAgent, strtolower($crawlerUserAgent))) {
-                $isRequestingPrerenderedPage = true;
+                return true;
             }
         }
 
-        if (!$isRequestingPrerenderedPage) {
+        return false;
+    }
+
+    public function isUrlAllowed(Request $request): bool
+    {
+        $requestUri = $request->getRequestUri();
+        $referer = $request->headers->get('Referer');
+        // Check if the current URL is allowed to be served via Serve.
+        $path = parse_url($request->getPathInfo(), PHP_URL_PATH);
+        $matches = $this->doesPathMatchPatterns($path, config('motaword.active.blacklist', []));
+        if ($matches) {
             return false;
         }
 
@@ -186,12 +183,12 @@ class ActiveServeMiddleware
         return true;
     }
 
-    protected function doesPathMatchPatterns($path, $patterns): bool
+    public function doesPathMatchPatterns($path, $patterns): bool
     {
         foreach ($patterns as $pattern) {
             // prepend optional 2-3-char locale code in the pattern
             $pattern = str_replace('*', '.*', $pattern);
-            $patternWithLocale = '#^(^([/]?)[a-zA-Z]{2,3}?)?('.$pattern.')\z#u';
+            $patternWithLocale = '#^(^([/]?)[a-zA-Z\-]{2,5}?)?('.$pattern.')\z#u';
             preg_match($patternWithLocale, $path, $matches);
             $isMatch = isset($matches[1]) && $matches[1] ? $matches[1] : ($matches[0] ?? null);
             if ($isMatch) {

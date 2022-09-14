@@ -204,6 +204,5 @@ return [
             'Google Page Speed',
             'Qwantify'
         ],
-        'ignored_urls' => [],
     ],
 ];
