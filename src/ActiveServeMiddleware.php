@@ -74,7 +74,7 @@ class ActiveServeMiddleware
 
         if ($this->returnSoftHttpCodes) {
             $this->client = $client;
-        } else if ($client) {
+        } elseif ($client) {
             // Workaround to avoid following redirects
             $config = $client->getConfig();
             $config['allow_redirects'] = false;

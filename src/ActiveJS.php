@@ -58,6 +58,7 @@ class ActiveJS
     public static function isAllowed(Request $request)
     {
         $middleware = new ActiveServeMiddleware(null);
+
         return $middleware->isUrlAllowed($request);
     }
 }
