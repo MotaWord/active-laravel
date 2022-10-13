@@ -41,7 +41,8 @@ class ActiveJSTest extends TestCase
         config()->set('motaword.active.widget_id', 1);
         config()->set('motaword.active.serve_enable', true);
 
-        config()->set('motaword.active.blacklist', ['/about', '/blog', '/blog/*', '/']);
+        config()->set('motaword.active.blacklist', ['/about', '/blog', '/blog/*', '/', '']);
+        config()->set('motaword.active.locale_codes', ['tr', 'pt-BR']);
 
         // will not render
 
