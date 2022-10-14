@@ -37,7 +37,7 @@ return [
         | Set your locale codes here. You can find the codes on your MotaWord dashboard, under Active > Configuration > Configure Locale mappings.
         |
         */
-        'locale_codes' => ['tr', 'fr', 'de', 'es', 'it', 'pt-BR', 'ru', 'zh'],
+        'locale_codes' => [],
 
         /*
         |--------------------------------------------------------------------------
