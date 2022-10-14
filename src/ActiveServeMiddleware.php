@@ -186,9 +186,9 @@ class ActiveServeMiddleware
     public function doesPathMatchPatterns($path, $patterns): bool
     {
         foreach ($patterns as $pattern) {
-            // prepend optional 2-3-char locale code in the pattern
+            $locales = config('motaword.active.locale_codes', []);
             $pattern = str_replace('*', '.*', $pattern);
-            $patternWithLocale = '#^(^([/]?)[a-zA-Z\-]{2,5}?)?('.$pattern.')\z#u';
+            $patternWithLocale = '#^(^([/]?)(' . implode('|', $locales) . '))?(' . $pattern . '|' . strtoupper($pattern) . ')\z#u';
             preg_match($patternWithLocale, $path, $matches);
             $isMatch = isset($matches[1]) && $matches[1] ? $matches[1] : ($matches[0] ?? null);
             if ($isMatch) {
