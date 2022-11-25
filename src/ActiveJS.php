@@ -48,7 +48,7 @@ class ActiveJS
             } else {
                 $preload = '<link rel="preconnect" href="https://active-js.motaword.com"/>'.$preload;
             }
-            $preload = $preload."<link rel=\"preload\" href=\"$scriptUrl\" as=\"script\" importance=\"high\" crossorigin".$pageOptimizedAttribute.'/><link rel="preconnect" href="https://api.motaword.com"/>';
+            $preload = $preload."<link rel=\"preload\" href=\"$scriptUrl\" as=\"script\" onload=\"document.dispatchEvent(new Event('ACTIVE_LOADED'))\" importance=\"high\" crossorigin".$pageOptimizedAttribute.'/><link rel="preconnect" href="https://api.motaword.com"/>';
             $injection = $preload.$injection;
         }
 
