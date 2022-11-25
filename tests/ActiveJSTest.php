@@ -30,7 +30,7 @@ class ActiveJSTest extends TestCase
         config()->set('motaword.active.serve_url', 'https://serve.staging.motaword.com');
         $result = ActiveJS::generate();
         $this->assertNotEmpty($result);
-        $this->assertEquals('<link rel="preconnect" href="https://serve.motaword.com"/><link rel="preload" href="https://serve.staging.motaword.com/js/1-1.js" as="script" importance="high" crossorigin referrerpolicy="unsafe-url" /><link rel="preconnect" href="https://api.motaword.com"/><script src="https://serve.staging.motaword.com/js/1-1.js" data-token="test" crossorigin async referrerpolicy="unsafe-url" ></script>', $result);
+        $this->assertEquals('<link rel="preconnect" href="https://serve.motaword.com"/><link rel="preload" href="https://serve.staging.motaword.com/js/1-1.js" as="script" onload="document.dispatchEvent(new Event("ACTIVE_LOADED"))" importance="high" crossorigin referrerpolicy="unsafe-url" /><link rel="preconnect" href="https://api.motaword.com"/><script src="https://serve.staging.motaword.com/js/1-1.js" data-token="test" crossorigin async referrerpolicy="unsafe-url" ></script>', $result);
     }
 
     /** @test */
