@@ -125,6 +125,10 @@ class ActiveServeMiddleware
      */
     public function shouldShowPrerenderedPage(Request $request): bool
     {
+        if ($request->get('forceActiveServe')) {
+            return true;
+        }
+
         if (!$this->isUrlAllowed($request)) {
             return false;
         }
