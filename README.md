@@ -15,8 +15,8 @@ This package is a clone from [codebar-ag/laravel-prerender](https://github.com/c
 
 ## 🛠 Requirements
 
-- PHP: `^7.2`
-- Laravel: `^6`
+- PHP: `^7.2 to ^8.2`
+- Laravel: `^6 to ^10`
 - MotaWord Active access
 
 ## ⚙️ Installation
