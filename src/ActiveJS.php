@@ -34,7 +34,7 @@ class ActiveJS
         }
 
         if ($config['serve_enable']) {
-            $scriptUrl = $config['serve_url']."/js/".$config['project_id']."-".$config['widget_id'].".js";
+            $scriptUrl = $config['serve_url'].'/js/'.$config['project_id'].'-'.$config['widget_id'].'.js';
             $injection .= "<script src=\"$scriptUrl\" ".($config['token'] ? 'data-token="'.$config['token'].'"' : '').' crossorigin async'.$pageOptimizedAttribute.'></script>';
         } else {
             $scriptUrl = $config['active_js_url'];
