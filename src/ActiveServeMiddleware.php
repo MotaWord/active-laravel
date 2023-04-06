@@ -5,6 +5,7 @@ namespace MotaWord\Active;
 use Closure;
 use Exception;
 use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -38,14 +39,14 @@ class ActiveServeMiddleware
     private $crawlerUserAgents;
 
     /**
-     * URI whitelist for prerendering pages only on this list.
+     * URI whitelist for pre-rendering pages only on this list.
      *
      * @var array
      */
     private $whitelist;
 
     /**
-     * URI blacklist for prerendering pages that are not on the list.
+     * URI blacklist for pre-rendering pages that are not on the list.
      *
      * @var array
      */
@@ -95,7 +96,7 @@ class ActiveServeMiddleware
      *
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if ($this->shouldShowPrerenderedPage($request)) {
             try {
@@ -121,7 +122,7 @@ class ActiveServeMiddleware
     }
 
     /**
-     * Returns whether the request must be prerendered.
+     * Returns whether the request must be pre-rendered.
      */
     public function shouldShowPrerenderedPage(Request $request): bool
     {
@@ -205,7 +206,7 @@ class ActiveServeMiddleware
 
     /**
      * Prerender the page and return the Guzzle Response.
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     private function getActiveServePageResponse(Request $request): ?ResponseInterface
     {
@@ -245,7 +246,7 @@ class ActiveServeMiddleware
 
             // In case of an exception, we only throw the exception if we are in debug mode. Otherwise,
             // we return null and the handle() method will just pass the request to the next middleware
-            // and we do not show a prerendered page.
+            // and we do not show a pre-rendered page.
             if (config('app.debug')) {
                 throw $exception;
             }

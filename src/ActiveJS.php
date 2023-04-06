@@ -55,7 +55,7 @@ class ActiveJS
         return $injection;
     }
 
-    public static function isAllowed(Request $request)
+    public static function isAllowed(Request $request): bool
     {
         $middleware = new ActiveServeMiddleware(null);
 

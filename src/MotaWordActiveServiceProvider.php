@@ -2,6 +2,7 @@
 
 namespace MotaWord\Active;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
 
@@ -9,6 +10,7 @@ class MotaWordActiveServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
+     * @throws BindingResolutionException
      */
     public function boot(): void
     {
