@@ -110,6 +110,20 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | MotaWord Active JS Whitelist
+        |--------------------------------------------------------------------------
+        |
+        | Whitelist paths or patterns. You can use asterix syntax, or regular
+        | expressions (without start and end markers).
+        | This whitelist this is specifically to initialize Active JS for those pages
+        | that are in the blacklist to be rendered by Active Serve.
+        | With this configuration, you can have a page which you don't serve via Active Serve
+        | but still localize via Active JS.
+        */
+        'whitelist_activejs_only' => [],
+
+        /*
+        |--------------------------------------------------------------------------
         | MotaWord Active Blacklist
         |--------------------------------------------------------------------------
         |
