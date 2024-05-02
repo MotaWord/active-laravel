@@ -93,4 +93,32 @@ class ActiveJSTest extends TestCase
         $this->assertTrue(ActiveJS::isAllowed($request));
         $this->assertNotEmpty(ActiveJS::generate($request));
     }
+
+    /** @test */
+    public function it_should_allow_js_only_whitelist()
+    {
+        config()->set('motaword.active.token', 'test');
+        config()->set('motaword.active.project_id', 1);
+        config()->set('motaword.active.widget_id', 1);
+        config()->set('motaword.active.serve_enable', true);
+
+        config()->set('motaword.active.blacklist', ['/about', '/blog', '/blog/*', '/', '']);
+        config()->set('motaword.active.locale_codes', ['tr', 'pt-BR']);
+
+        $symfonyRequest = SymfonyRequest::create('/blog');
+        $request = Request::createFromBase($symfonyRequest);
+        $this->assertFalse(ActiveJS::isAllowed($request));
+        $this->assertEmpty(ActiveJS::generate($request));
+
+        $symfonyRequest = SymfonyRequest::create('/about');
+        $request = Request::createFromBase($symfonyRequest);
+        $this->assertFalse(ActiveJS::isAllowed($request));
+        $this->assertEmpty(ActiveJS::generate($request));
+
+        config()->set('motaword.active.whitelist_activejs_only', ['/about']);
+        $symfonyRequest = SymfonyRequest::create('/about');
+        $request = Request::createFromBase($symfonyRequest);
+        $this->assertTrue(ActiveJS::isAllowed($request));
+        $this->assertNotEmpty(ActiveJS::generate($request));
+    }
 }
