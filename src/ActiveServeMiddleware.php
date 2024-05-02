@@ -166,8 +166,12 @@ class ActiveServeMiddleware
 
         // only check whitelist if it is not empty
         if ($this->whitelist) {
-            if (!$this->isListed($requestUri, $this->whitelist)) {
-                return false;
+            if ($this->isListed($requestUri, $this->whitelist)) {
+                return true;
+            } else {
+                if (!$this->blacklist) {
+                    return false;
+                }
             }
         }
 
