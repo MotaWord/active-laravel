@@ -119,6 +119,7 @@ class ActiveJSTest extends TestCase
         $symfonyRequest = SymfonyRequest::create('/about');
         $request = Request::createFromBase($symfonyRequest);
         $this->assertTrue(ActiveJS::isAllowed($request));
+        $this->assertFalse(ActiveJS::isServeAllowed($request));
         $this->assertNotEmpty(ActiveJS::generate($request));
     }
 }

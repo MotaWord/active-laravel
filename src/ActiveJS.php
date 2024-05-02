@@ -55,24 +55,34 @@ class ActiveJS
         return $injection;
     }
 
-    public static function isAllowed(Request $request): bool
+    public static function isServeAllowed(Request $request): bool
+    {
+        return static::isAllowed($request, true);
+    }
+
+
+    public static function isAllowed(Request $request, $forServe = false): bool
     {
         // temporarily override blacklist/whitelist config with whitelist_activejs_only config.
-        $appConfig = app('config');
-        $mwConfig = config('motaword.active');
-        $previousWhitelist = $mwConfig['whitelist'];
-        $previousBlacklist = $mwConfig['blacklist'];
-        // this is a hack for active-laravel package to enable ActiveJS for pages that are in blacklist for Active Serve.
-        if (!empty($mwConfig['whitelist_activejs_only'])) {
-            $appConfig->set('motaword.active.whitelist', $mwConfig['whitelist_activejs_only']);
-            $appConfig->set('motaword.active.blacklist', array_diff($mwConfig['blacklist'], $mwConfig['whitelist_activejs_only']));
+        if (!$forServe) {
+            $appConfig = app('config');
+            $mwConfig = config('motaword.active');
+            $previousWhitelist = $mwConfig['whitelist'];
+            $previousBlacklist = $mwConfig['blacklist'];
+            // this is a hack for active-laravel package to enable ActiveJS for pages that are in blacklist for Active Serve.
+            if (!empty($mwConfig['whitelist_activejs_only'])) {
+                $appConfig->set('motaword.active.whitelist', $mwConfig['whitelist_activejs_only']);
+                $appConfig->set('motaword.active.blacklist', array_diff($mwConfig['blacklist'], $mwConfig['whitelist_activejs_only']));
+            }
         }
 
         $middleware = new ActiveServeMiddleware(null);
         $isAllowed = $middleware->isUrlAllowed($request);
 
-        $appConfig->set('motaword.active.whitelist', $previousWhitelist);
-        $appConfig->set('motaword.active.blacklist', $previousBlacklist);
+        if (!$forServe) {
+            $appConfig->set('motaword.active.whitelist', $previousWhitelist);
+            $appConfig->set('motaword.active.blacklist', $previousBlacklist);
+        }
 
         return $isAllowed;
     }

@@ -164,6 +164,11 @@ class ActiveServeMiddleware
             return false;
         }
 
+        $matches = $this->doesPathMatchPatterns($path, config('motaword.active.whitelist', []));
+        if ($matches) {
+            return true;
+        }
+
         // only check whitelist if it is not empty
         if ($this->whitelist) {
             if ($this->isListed($requestUri, $this->whitelist)) {
