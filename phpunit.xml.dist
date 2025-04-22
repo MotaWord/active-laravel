@@ -5,11 +5,9 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <coverage>
+  <coverage includeUncoveredFiles="false">
     <report>
-      <html outputDirectory="build/coverage"/>
       <text outputFile="build/coverage.txt"/>
-      <clover outputFile="build/logs/clover.xml"/>
     </report>
   </coverage>
   <logging>
