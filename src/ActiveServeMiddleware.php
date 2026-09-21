@@ -280,8 +280,16 @@ class ActiveServeMiddleware
         $needles = Arr::wrap($needles);
 
         foreach ($list as $pattern) {
+            // File-extension patterns (e.g. "*.pdf", "*.ai") are meant to exclude asset
+            // *files*, so they must match the URI path only. Matching them against the
+            // full request URI lets a query string ending in such an extension disable
+            // Active for a regular page (e.g. "/blog/post?ref=examples.tely.ai" vs "*.ai").
+            $matchWithoutQueryString = preg_match('/^\*\.[A-Za-z0-9]+$/', $pattern) === 1;
+
             foreach ($needles as $needle) {
-                if (Str::is($pattern, $needle)) {
+                $subject = $matchWithoutQueryString ? preg_replace('/[?#].*$/s', '', $needle) : $needle;
+
+                if (Str::is($pattern, $subject)) {
                     return true;
                 }
             }
