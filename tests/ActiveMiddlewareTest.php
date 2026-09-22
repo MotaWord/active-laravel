@@ -55,6 +55,39 @@ class ActiveMiddlewareTest extends TestCase
     }
 
     /** @test */
+    public function it_should_prerender_page_when_query_param_value_ends_with_blacklisted_extension()
+    {
+        $this->allowSymfonyUserAgent();
+        config()->set('motaword.active.blacklist', ['*.ai']);
+
+        $this->get('/test-middleware?ref=examples.tely.ai')
+            ->assertHeader('X-Renderer', 'MotaWord Active Serve')
+            ->assertSuccessful();
+    }
+
+    /** @test */
+    public function it_should_not_prerender_asset_path_with_blacklisted_extension()
+    {
+        $this->allowSymfonyUserAgent();
+        config()->set('motaword.active.blacklist', ['*.ai']);
+
+        $this->get('/downloads/logo.ai')
+            ->assertHeaderMissing('X-Renderer');
+    }
+
+    /** @test */
+    public function it_should_still_blacklist_by_query_string_with_non_extension_patterns()
+    {
+        $this->allowSymfonyUserAgent();
+        config()->set('motaword.active.blacklist', ['*preview=true*']);
+
+        $this->get('/test-middleware?preview=true')
+            ->assertSuccessful()
+            ->assertHeaderMissing('X-Renderer')
+            ->assertSee('GET - Success');
+    }
+
+    /** @test */
     public function it_should_not_prerender_page_on_non_get_request()
     {
         $this->allowSymfonyUserAgent();
